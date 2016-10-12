@@ -18,95 +18,98 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class CookClient {
 
-	public Retrofit retrofit;
+    private static CookClient cookClient;
 
-	public CookClient() {
-		init();
-	}
 
-	private void init() {
+    public static CookClient getInstance() {
+        if (null == cookClient) {
+            cookClient = new CookClient();
+        }
+        return cookClient;
+    }
 
-		OkHttpClient client = new OkHttpClient.Builder()
-				.connectTimeout(30, TimeUnit.SECONDS)
-				.readTimeout(30, TimeUnit.SECONDS)
-				.addInterceptor(new MyInterceptor()).build();
+    private Retrofit retrofit;
 
-		retrofit = new Retrofit.Builder().baseUrl("http://192.168.0.106:8088")
-				.addConverterFactory(GsonConverterFactory.create())
-				.client(client).build();
+    private CookClient() {
+        init();
+    }
 
-	}
+    private void init() {
 
-	public HttpResult getCookDetialById(int id) {
-		
-		final HttpResult result=new HttpResult();
-		HttpInterface registerInterface = retrofit.create(HttpInterface.class);
-		Call<CookDetail> detaill = registerInterface.getDetialByID(8);
-		Response<CookDetail> cookDetail=null;
-		try {
-			cookDetail=detaill.execute();
-			result.setBaseModel(cookDetail.body());
-			result.setCode(0);
-			result.setState("succuss");
-		} catch (IOException e) {
-			result.setCode(1);
-			result.setState(e.toString());
-			e.printStackTrace();
-		}
-		return result;
-	}
+        OkHttpClient client = new OkHttpClient.Builder()
+                .connectTimeout(5, TimeUnit.SECONDS)
+                .readTimeout(30, TimeUnit.SECONDS)
+                .addInterceptor(new MyInterceptor()).build();
 
-	class MyInterceptor implements Interceptor {
+        retrofit = new Retrofit.Builder().baseUrl("http://192.168.0.106:8088")
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(client).build();
 
-		@Override
-		public okhttp3.Response intercept(Chain arg0) throws IOException {
-			Request request = arg0.request().newBuilder()
-					.addHeader("apikey", "788117b5566e7efea9c75a89b43ce862")
-					.build();
-			return arg0.proceed(request);
-		}
+    }
 
-	}
+    public HttpResult getCookDetialById(int id) {
 
-	/**
-	 * @param urlAll
-	 *            :请求接口
-	 * @param httpArg
-	 *            :参数
-	 * @return 返回结果
-	 */
-	public String request() {
-		BufferedReader reader = null;
-		String result = null;
-		StringBuffer sbf = new StringBuffer();
-		String local="http://192.168.0.106:8088";
-		String httpUrl = local+"/tngou/cook/show" + "?"
-				+ "id=10";
+        final HttpResult result = new HttpResult();
+        HttpInterface registerInterface = retrofit.create(HttpInterface.class);
+        Call<CookDetail> detaill = registerInterface.getDetialByID(8);
+        Response<CookDetail> cookDetail = null;
+        try {
+            cookDetail = detaill.execute();
+            result.setBaseModel(cookDetail.body());
+            result.setCode(0);
+            result.setState("succuss");
+        } catch (Exception e) {
+            result.setCode(1);
+            result.setState(e.toString());
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    class MyInterceptor implements Interceptor {
+
+        @Override
+        public okhttp3.Response intercept(Chain arg0) throws IOException {
+            Request request = arg0.request().newBuilder()
+                    .addHeader("apikey", "788117b5566e7efea9c75a89b43ce862")
+                    .build();
+            return arg0.proceed(request);
+        }
+
+    }
+
+    public String request() {
+        BufferedReader reader = null;
+        String result = null;
+        StringBuffer sbf = new StringBuffer();
+        String local = "http://192.168.0.106:8088";
+        String httpUrl = local + "/tngou/cook/show" + "?"
+                + "id=10";
 //		String httpUrl = "http://apis.baidu.com/tngou/cook/show" + "?"
 //				+ "id=10";
 
-		try {
-			URL url = new URL(httpUrl);
-			HttpURLConnection connection = (HttpURLConnection) url
-					.openConnection();
-			connection.setRequestMethod("GET");
-			// 填入apikey到HTTP header
-			connection.setRequestProperty("apikey",
-					"788117b5566e7efea9c75a89b43ce862");
-			connection.connect();
-			InputStream is = connection.getInputStream();
-			reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
-			String strRead = null;
-			while ((strRead = reader.readLine()) != null) {
-				sbf.append(strRead);
-				sbf.append("\r\n");
-			}
-			reader.close();
-			result = sbf.toString();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return result;
-	}
+        try {
+            URL url = new URL(httpUrl);
+            HttpURLConnection connection = (HttpURLConnection) url
+                    .openConnection();
+            connection.setRequestMethod("GET");
+            // 锟斤拷锟斤拷apikey锟斤拷HTTP header
+            connection.setRequestProperty("apikey",
+                    "788117b5566e7efea9c75a89b43ce862");
+            connection.connect();
+            InputStream is = connection.getInputStream();
+            reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
+            String strRead = null;
+            while ((strRead = reader.readLine()) != null) {
+                sbf.append(strRead);
+                sbf.append("\r\n");
+            }
+            reader.close();
+            result = sbf.toString();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
 
 }
