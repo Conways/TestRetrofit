@@ -1,45 +1,62 @@
 package com.example.testretrofit;
 
+import java.util.List;
+
 public class HttpResult {
 
-	public HttpResult() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
+    public HttpResult() {
+        super();
+    }
 
-	private BaseModel baseModel;
+    private BaseModel data;
 
-	private int code;
+    private int code;
 
-	private String state;
+    private String msg;
 
-	public BaseModel getBaseModel() {
-		return baseModel;
-	}
+    private List<BaseModel> datas;
 
-	public void setBaseModel(BaseModel baseModel) {
-		this.baseModel = baseModel;
-	}
 
-	public int getCode() {
-		return code;
-	}
+    public BaseModel getData() {
+        return data;
+    }
 
-	public void setCode(int code) {
-		this.code = code;
-	}
+    public void setData(BaseModel data) {
+        this.data = data;
+    }
 
-	public String getState() {
-		return state;
-	}
+    public int getCode() {
+        return code;
+    }
 
-	public void setState(String state) {
-		this.state = state;
-	}
+    public void setCode(int code) {
+        this.code = code;
+    }
 
-	@Override
-	public String toString() {
-		return "HttpResult [baseModel=" + baseModel + ", code=" + code + ", state=" + state + "]";
-	}
+    public String getMsg() {
+        return msg;
+    }
 
+    public void setMsg(String msg) {
+        this.msg = msg;
+    }
+
+    public List<BaseModel> getDatas() {
+        return datas;
+    }
+
+    public void setDatas(List<BaseModel> datas) {
+        this.datas = datas;
+    }
+
+
+    @Override
+    public String toString() {
+        return "HttpResult{" +
+                "data=" + data +
+                ", code=" + code +
+                ", msg='" + msg + '\'' +
+                ", datas=" + datas +
+                '}';
+    }
 }

@@ -13,82 +13,44 @@ import android.widget.Toast;
 
 public class MainActivity extends Activity {
 
+    private ProgressDialog progressDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        progressDialog=new ProgressDialog(this);
 
         ((Button) this.findViewById(R.id.get)).setOnClickListener(new OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                new GetFamilyNoTask().execute();
-                // new CookClient().getCookDetialById(10);
+                CookClient.getInstance().getCookDetialById(5, new HttpResultCallBack() {
+
+                    @Override
+                    public void onStart() {
+                        progressDialog.setMessage("请求中..");
+                        progressDialog.show();
+                    }
+
+                    @Override
+                    public void onSuccuss(BaseModel baseModel) {
+                        Toast.makeText(MainActivity.this, (((CookDetail) baseModel).toString()),
+                                Toast.LENGTH_SHORT).show();
+                        progressDialog.dismiss();
+                    }
+
+                    @Override
+                    public void onFailed(FailedResult failedResult) {
+                        Toast.makeText(MainActivity.this, failedResult.getMsg(),
+                                Toast.LENGTH_SHORT).show();
+                        progressDialog.dismiss();
+                    }
+                });
 
             }
         });
     }
 
-    class GetFamilyNoTask extends AsyncTask<String, String, HttpResult> {
-
-        private ProgressDialog dialog;
-
-        @Override
-        protected void onPreExecute() {
-            dialog = new ProgressDialog(MainActivity.this);
-            dialog.setCancelable(false);
-            dialog.show();
-            super.onPreExecute();
-        }
-
-        @Override
-        protected HttpResult doInBackground(String... params) {
-            return CookClient.getInstance().getCookDetialById(5);
-        }
-
-        @Override
-        protected void onPostExecute(HttpResult result) {
-            dialog.dismiss();
-            if (result.getBaseModel() != null) {
-                Toast.makeText(MainActivity.this, result.toString(), Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(MainActivity.this, result.getState(), Toast.LENGTH_SHORT).show();
-            }
-
-            super.onPostExecute(result);
-        }
-
-    }
-
-    class GetFamilyNoTas extends AsyncTask<String, String, String> {
-
-        private ProgressDialog dialog;
-
-        @Override
-        protected void onPreExecute() {
-            dialog = new ProgressDialog(MainActivity.this);
-            dialog.setCancelable(false);
-            dialog.show();
-            super.onPreExecute();
-        }
-
-        @Override
-        protected String doInBackground(String... params) {
-            return CookClient.getInstance().request();
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            dialog.dismiss();
-            if (result != null) {
-                Toast.makeText(MainActivity.this, result.toString(), Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(MainActivity.this, result, Toast.LENGTH_SHORT).show();
-            }
-
-            super.onPostExecute(result);
-        }
-
-    }
 
 }
